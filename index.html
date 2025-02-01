@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Valentine's Day Proposal</title>
+  <style>
+    body {
+      background-color: #ffe6ea;
+      text-align: center;
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+    }
+    .container {
+      position: relative;
+      width: 100%;
+      height: 100vh;
+      overflow: hidden;
+    }
+    .background {
+      position: absolute;
+      width: 100%;
+      height: 100vh;
+      background: url('hearts-background.gif') no-repeat center center/cover;
+      z-index: -1;
+    }
+    /* Container for floating hearts */
+    #heartsContainer {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      pointer-events: none;
+      z-index: 0;
+    }
+    /* Floating hearts style */
+    .heart {
+      position: absolute;
+      bottom: -50px;
+      pointer-events: none;
+      user-select: none;
+      animation-name: floatUp;
+      animation-timing-function: linear;
+      animation-fill-mode: forwards;
+    }
+    @keyframes floatUp {
+      0% {
+        transform: translateY(0);
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(-110vh);
+        opacity: 0;
+      }
+    }
+    .bear-image {
+      margin-top: 50px;
+      width: 200px;
+      z-index: 1;
+      position: relative;
+    }
+    h1 {
+      font-size: 2.5rem;
+      font-weight: bold;
+      color: #000;
+      margin: 20px 0;
+      z-index: 1;
+      position: relative;
+    }
+    .buttons {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      position: relative;
+      z-index: 1;
+    }
+    .button {
+      font-size: 1.5rem;
+      font-weight: bold;
+      padding: 15px 30px;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: 0.3s;
+      position: relative;
+    }
+    .yes {
+      background-color: #28a745;
+      color: white;
+    }
+    .yes:hover {
+      background-color: #218838;
+    }
+    .no {
+      background-color: #dc3545;
+      color: white;
+    }
+    .no:hover {
+      background-color: #c82333;
+    }
+    .made-with {
+      position: absolute;
+      bottom: 10px;
+      right: 10px;
+      font-size: 1rem;
+      background: rgba(255, 255, 255, 0.8);
+      padding: 5px 10px;
+      border-radius: 5px;
+      z-index: 1;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="background"></div>
+    <!-- Hearts container for floating hearts -->
+    <div id="heartsContainer"></div>
+    <img src="bear.jpg" alt="Cute Bear" class="bear-image" />
+    <h1>Will you be my Valentine?</h1>
+    <div class="buttons">
+      <button class="button yes" id="yesButton">Yes</button>
+      <button class="button no" id="noButton">No</button>
+    </div>
+    <div class="made-with">Made with ❤️</div>
+  </div>
+  <script>
+    const yesButton = document.getElementById('yesButton');
+    const noButton = document.getElementById('noButton');
+
+    let noClickCount = 0;
+
+    function moveButton() {
+      // On first interaction, set the button's position to absolute
+      if (noButton.style.position !== 'absolute') {
+        noButton.style.position = 'absolute';
+      }
+      const maxX = window.innerWidth - noButton.offsetWidth;
+      const maxY = window.innerHeight - noButton.offsetHeight;
+      const randomX = Math.random() * maxX;
+      const randomY = Math.random() * maxY;
+      noButton.style.left = randomX + 'px';
+      noButton.style.top = randomY + 'px';
+    }
+
+    // Move the "No" button on hover or touch
+    noButton.addEventListener('mouseover', moveButton);
+    noButton.addEventListener('touchstart', moveButton);
+
+    // Handle clicks on the "No" button
+    noButton.addEventListener('click', function () {
+      if (noButton.textContent === 'Yes') {
+        handleYesClick();
+      } else {
+        noClickCount++;
+        if (noClickCount >= 5) {
+          // Convert "No" into "Yes" after 5 clicks
+          noButton.textContent = 'Yes';
+          noButton.classList.remove('no');
+          noButton.classList.add('yes');
+          // Remove moving behavior
+          noButton.removeEventListener('mouseover', moveButton);
+          noButton.removeEventListener('touchstart', moveButton);
+        }
+      }
+    });
+
+    // Handle clicks on the "Yes" button (or converted button)
+    function handleYesClick() {
+      if (confirm('Really?')) {
+        alert('Thank you! See you February 14th mwah');
+      }
+    }
+    yesButton.addEventListener('click', handleYesClick);
+
+    // Function to spawn a floating heart
+    function spawnHeart() {
+      const heart = document.createElement('span');
+      heart.className = 'heart';
+      heart.textContent = '❤️';
+      // Random size between 20px and 50px
+      const size = Math.random() * 30 + 20;
+      heart.style.fontSize = size + 'px';
+      // Random horizontal position (percentage)
+      heart.style.left = Math.random() * 100 + '%';
+      // Random animation duration between 4s and 8s
+      const duration = Math.random() * 4 + 4;
+      heart.style.animationDuration = duration + 's';
+      // Random delay to stagger hearts
+      const delay = Math.random() * 5;
+      heart.style.animationDelay = delay + 's';
+      document.getElementById('heartsContainer').appendChild(heart);
+      // Remove the heart after the animation ends
+      heart.addEventListener('animationend', function () {
+        heart.remove();
+      });
+    }
+
+    // Spawn hearts continuously every 500 milliseconds
+    setInterval(spawnHeart, 500);
+  </script>
+</body>
+</html>
