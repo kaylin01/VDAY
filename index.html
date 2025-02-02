@@ -130,18 +130,19 @@
   <script>
     const yesButton = document.getElementById('yesButton');
     const noButton = document.getElementById('noButton');
-
     let noClickCount = 0;
 
     function moveButton() {
-      // On first interaction, set the button's position to absolute
-      if (noButton.style.position !== 'absolute') {
-        noButton.style.position = 'absolute';
+      // Set the button's position to fixed so its coordinates are relative to the viewport.
+      if (noButton.style.position !== 'fixed') {
+        noButton.style.position = 'fixed';
       }
-      const maxX = window.innerWidth - noButton.offsetWidth;
-      const maxY = window.innerHeight - noButton.offsetHeight;
-      const randomX = Math.random() * maxX;
-      const randomY = Math.random() * maxY;
+      // Add a small safe margin so the button never touches the viewport edges.
+      const safeMargin = 10;
+      const maxX = window.innerWidth - noButton.offsetWidth - safeMargin;
+      const maxY = window.innerHeight - noButton.offsetHeight - safeMargin;
+      const randomX = safeMargin + Math.random() * maxX;
+      const randomY = safeMargin + Math.random() * maxY;
       noButton.style.left = randomX + 'px';
       noButton.style.top = randomY + 'px';
     }
@@ -161,7 +162,7 @@
           noButton.textContent = 'Yes';
           noButton.classList.remove('no');
           noButton.classList.add('yes');
-          // Remove moving behavior
+          // Remove the moving behavior
           noButton.removeEventListener('mouseover', moveButton);
           noButton.removeEventListener('touchstart', moveButton);
         }
